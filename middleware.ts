@@ -1,62 +1,25 @@
 import { type NextRequest, NextResponse } from 'next/server';
-import { rootDomain } from '@/lib/utils';
 
-function extractSubdomain(request: NextRequest): string | null {
-  const url = request.url;
-  const host = request.headers.get('host') || '';
-  const hostname = host.split(':')[0];
-
-  // Local development environment
-  if (url.includes('localhost') || url.includes('127.0.0.1')) {
-    // Try to extract subdomain from the full URL
-    const fullUrlMatch = url.match(/http:\/\/([^.]+)\.localhost/);
-    if (fullUrlMatch && fullUrlMatch[1]) {
-      return fullUrlMatch[1];
-    }
-
-    // Fallback to host header approach
-    if (hostname.includes('.localhost')) {
-      return hostname.split('.')[0];
-    }
-
-    return null;
-  }
-
-  // Production environment
-  const rootDomainFormatted = rootDomain.split(':')[0];
-
-  // Handle preview deployment URLs (tenant---branch-name.vercel.app)
-  if (hostname.includes('---') && hostname.endsWith('.vercel.app')) {
-    const parts = hostname.split('---');
-    return parts.length > 0 ? parts[0] : null;
-  }
-
-  // Regular subdomain detection
-  const isSubdomain =
-    hostname !== rootDomainFormatted &&
-    hostname !== `www.${rootDomainFormatted}` &&
-    hostname.endsWith(`.${rootDomainFormatted}`);
-
-  return isSubdomain ? hostname.replace(`.${rootDomainFormatted}`, '') : null;
+function extractWorkspaceSlug(pathname: string): string | null {
+  // Extract workspace slug from /w/[slug] path pattern
+  const workspaceMatch = pathname.match(/^\/w\/([^\/]+)/);
+  return workspaceMatch ? workspaceMatch[1] : null;
 }
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  const subdomain = extractSubdomain(request);
+  const workspaceSlug = extractWorkspaceSlug(pathname);
 
-  if (subdomain) {
-    // Block access to admin page from subdomains
-    if (pathname.startsWith('/admin')) {
-      return NextResponse.redirect(new URL('/', request.url));
-    }
-
-    // For the root path on a subdomain, rewrite to the subdomain page
-    if (pathname === '/') {
-      return NextResponse.rewrite(new URL(`/s/${subdomain}`, request.url));
-    }
+  // Handle workspace routes /w/[slug]/*
+  if (workspaceSlug) {
+    // TODO: Add workspace validation and user authentication
+    // TODO: Add role-based access control for admin routes
+    
+    // For now, allow all workspace routes to pass through
+    return NextResponse.next();
   }
 
-  // On the root domain, allow normal access
+  // Handle root domain routes
   return NextResponse.next();
 }
 
