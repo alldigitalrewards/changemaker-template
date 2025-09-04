@@ -2,27 +2,6 @@
 
 A production-ready example of a multi-tenant application built with Next.js 15, featuring custom subdomains for each tenant.
 
-## Features
-
-- ✅ Custom subdomain routing with Next.js middleware
-- ✅ Tenant-specific content and pages
-- ✅ Shared components and layouts across tenants
-- ✅ Redis for tenant data storage
-- ✅ Admin interface for managing tenants
-- ✅ Emoji support for tenant branding
-- ✅ Support for local development with subdomains
-- ✅ Compatible with Vercel preview deployments
-
-## Tech Stack
-
-- [Next.js 15](https://nextjs.org/) with App Router
-- [React 19](https://react.dev/)
-- [Upstash Redis](https://upstash.com/) for data storage
-- [Tailwind 4](https://tailwindcss.com/) for styling
-- [shadcn/ui](https://ui.shadcn.com/) for the design system
-
-## Getting Started
-
 ### Prerequisites
 
 - Node.js 18.17.0 or later
@@ -129,6 +108,7 @@ cp -r ../changemaker-1/src/app/api/{auth,challenges,initiatives,enrollments,user
 #### Step 4: Adapt Business Logic (Supabase/Prisma Instead of Redis)
 
 - **DB Setup**: Copy Prisma schema and generate client.
+
   ```
   mkdir prisma
   cp -r ../changemaker-1/prisma/schema.prisma prisma/
@@ -136,6 +116,7 @@ cp -r ../changemaker-1/src/app/api/{auth,challenges,initiatives,enrollments,user
   pnpm prisma generate
   ```
 - **Auth**: Template uses simple auth; replace with Supabase SSR.
+
   ```
   pnpm add @supabase/ssr @supabase/supabase-js
   cp -r ../changemaker-1/src/lib/auth lib/  # Your auth lib
@@ -143,6 +124,7 @@ cp -r ../changemaker-1/src/app/api/{auth,challenges,initiatives,enrollments,user
 
   - Update middleware.ts: Merge template's subdomain logic with your Supabase auth (e.g., check tenant via Supabase query).
 - **Core Logic Services**: Copy minimal services for challenges/users.
+
   ```
   mkdir lib/services
   cp -r ../changemaker-1/src/lib/services/{challengeService,userSyncService} lib/services/  # Add more as needed
