@@ -1,0 +1,2 @@
+Path routing format:
+changemaker.im/workspace/organization/role/resource

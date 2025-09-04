@@ -1,0 +1,17 @@
+[command]
+name = "smart-commit"
+description = "Analyze git changes and intelligently group related files for atomic commits"
+script = "smart-commit.js"
+
+[options]
+dry-run = { type = "boolean", default = false, description = "Show commit plan without executing" }
+interactive = { type = "boolean", default = false, description = "Ask for confirmation before each commit" }
+push = { type = "boolean", default = false, description = "Push commits after creating them" }
+verbose = { type = "boolean", default = false, description = "Show detailed analysis of changes" }
+
+[examples]
+basic = "/smart-commit"
+dry-run = "/smart-commit --dry-run"
+interactive = "/smart-commit --interactive"
+push-after = "/smart-commit --push"
+verbose-analysis = "/smart-commit --verbose --dry-run"
