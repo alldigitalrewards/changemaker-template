@@ -24,8 +24,7 @@ export async function getCurrentUser(): Promise<User | null> {
     if (!session?.user) return null
 
     const user = await prisma.user.findUnique({
-      where: { supabaseUserId: session.user.id },
-      include: { workspace: true }
+      where: { supabaseUserId: session.user.id }
     })
 
     return user
@@ -46,9 +45,17 @@ export async function requireAuth() {
 export async function requireWorkspaceAccess(workspaceSlug: string) {
   const user = await requireAuth()
   
-  if (!user.workspace || user.workspace.slug !== workspaceSlug) {
+  if (!user.workspaceId) {
+    throw new Error('User not assigned to workspace')
+  }
+  
+  const workspace = await prisma.workspace.findUnique({
+    where: { id: user.workspaceId }
+  })
+  
+  if (!workspace || workspace.slug !== workspaceSlug) {
     throw new Error('Workspace access denied')
   }
   
-  return { user, workspace: user.workspace }
+  return { user, workspace }
 }
