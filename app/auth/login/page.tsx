@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import Link from 'next/link'
+import PublicNavbar from '@/components/navigation/public-navbar'
 
 function LoginForm() {
   const [email, setEmail] = useState('')
@@ -59,7 +60,9 @@ function LoginForm() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center">
+    <div className="min-h-screen bg-gray-50">
+      <PublicNavbar />
+      <div className="flex items-center justify-center min-h-[calc(100vh-4rem)] py-12">
       <div className="w-full max-w-md space-y-8 px-4">
         <div className="text-center">
           <h2 className="text-3xl font-bold">Login</h2>
@@ -116,6 +119,7 @@ function LoginForm() {
             </Link>
           </div>
         </form>
+      </div>
       </div>
     </div>
   )
