@@ -4,7 +4,8 @@
       "mcp__context7__get-library-docs",
       "Bash(psql:*)",
       "Bash(node:*)",
-      "Bash(ls:*)"
+      "Bash(ls:*)",
+      "Bash(pnpm build:*)"
     ],
     "additionalDirectories": [
       "/Users/jack/Projects/changemaker-project/changemaker-1"

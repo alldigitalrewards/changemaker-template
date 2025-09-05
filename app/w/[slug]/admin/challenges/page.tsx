@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, use } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
@@ -18,8 +18,9 @@ interface Challenge {
 export default function AdminChallengesPage({ 
   params 
 }: { 
-  params: { slug: string } 
+  params: Promise<{ slug: string }> 
 }) {
+  const { slug } = use(params);
   const [challenges, setChallenges] = useState<Challenge[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -29,11 +30,11 @@ export default function AdminChallengesPage({
   // Fetch challenges
   useEffect(() => {
     fetchChallenges();
-  }, [params.slug]);
+  }, [slug]);
 
   const fetchChallenges = async () => {
     try {
-      const response = await fetch(`/api/workspaces/${params.slug}/challenges`);
+      const response = await fetch(`/api/workspaces/${slug}/challenges`);
       if (response.ok) {
         const data = await response.json();
         setChallenges(data.challenges || []);
@@ -48,7 +49,7 @@ export default function AdminChallengesPage({
     setIsLoading(true);
 
     try {
-      const response = await fetch(`/api/workspaces/${params.slug}/challenges`, {
+      const response = await fetch(`/api/workspaces/${slug}/challenges`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ title, description }),
@@ -78,7 +79,7 @@ export default function AdminChallengesPage({
         <div>
           <h1 className="text-3xl font-bold text-navy-900">Challenges</h1>
           <p className="text-muted-foreground mt-2">
-            Manage challenges for workspace: <span className="font-mono text-coral-600">{params.slug}</span>
+            Manage challenges for workspace: <span className="font-mono text-coral-600">{slug}</span>
           </p>
         </div>
         
