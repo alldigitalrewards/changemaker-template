@@ -47,7 +47,9 @@ function LoginForm() {
         })
       }
 
-      router.push('/')
+      // Redirect to workspace hub or specified redirect URL
+      const redirectTo = searchParams.get('redirectTo') || '/workspaces'
+      router.push(redirectTo)
       router.refresh()
     } catch (error: any) {
       setError(error.message || 'Failed to login')
