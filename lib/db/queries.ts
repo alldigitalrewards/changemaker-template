@@ -23,15 +23,13 @@ export class DatabaseError extends Error {
 
 export class WorkspaceAccessError extends DatabaseError {
   constructor(workspaceId: string) {
-    super(`Access denied to workspace: ${workspaceId}`)
-    this.code = 'WORKSPACE_ACCESS_DENIED'
+    super(`Access denied to workspace: ${workspaceId}`, 'WORKSPACE_ACCESS_DENIED')
   }
 }
 
 export class ResourceNotFoundError extends DatabaseError {
   constructor(resource: string, id: string) {
-    super(`${resource} not found: ${id}`)
-    this.code = 'RESOURCE_NOT_FOUND'
+    super(`${resource} not found: ${id}`, 'RESOURCE_NOT_FOUND')
   }
 }
 
