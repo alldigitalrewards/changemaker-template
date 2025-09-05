@@ -53,7 +53,8 @@
 
 ### Database Stays Simple:
 
-  model User {
+```typescript
+model User {
     id, email, role, workspaceId, supabaseUserId
   }
   model Workspace {
@@ -65,6 +66,7 @@
   model Enrollment {
     id, userId, challengeId, status
   }
+```
 
   *That's it. 4 models, not 30+.*
 
