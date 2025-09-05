@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
 import { 
   WorkspaceApiProps, 
   ChallengeCreateRequest, 
@@ -8,6 +7,13 @@ import {
   validateChallengeData,
   ApiError
 } from '@/lib/types';
+import { 
+  getWorkspaceBySlug,
+  getWorkspaceChallenges, 
+  createChallenge,
+  DatabaseError,
+  ResourceNotFoundError 
+} from '@/lib/db/queries';
 
 export async function GET(
   request: NextRequest,
@@ -15,15 +21,9 @@ export async function GET(
 ): Promise<NextResponse<ChallengeListResponse | ApiError>> {
   try {
     const { slug } = await context.params;
-    const workspace = await prisma.workspace.findUnique({
-      where: { slug },
-      include: {
-        challenges: {
-          orderBy: { id: 'desc' }
-        }
-      }
-    });
-
+    
+    // Get workspace with validation
+    const workspace = await getWorkspaceBySlug(slug);
     if (!workspace) {
       return NextResponse.json(
         { error: 'Workspace not found' },
@@ -31,9 +31,20 @@ export async function GET(
       );
     }
 
-    return NextResponse.json({ challenges: workspace.challenges });
+    // Get challenges using standardized query
+    const challenges = await getWorkspaceChallenges(workspace.id);
+
+    return NextResponse.json({ challenges });
   } catch (error) {
     console.error('Error fetching challenges:', error);
+    
+    if (error instanceof DatabaseError) {
+      return NextResponse.json(
+        { error: error.message },
+        { status: 500 }
+      );
+    }
+    
     return NextResponse.json(
       { error: 'Failed to fetch challenges' },
       { status: 500 }
@@ -59,11 +70,8 @@ export async function POST(
 
     const { title, description } = body;
 
-    // Find workspace
-    const workspace = await prisma.workspace.findUnique({
-      where: { slug }
-    });
-
+    // Find workspace with validation
+    const workspace = await getWorkspaceBySlug(slug);
     if (!workspace) {
       return NextResponse.json(
         { error: 'Workspace not found' },
@@ -71,18 +79,23 @@ export async function POST(
       );
     }
 
-    // Create challenge
-    const challenge = await prisma.challenge.create({
-      data: {
-        title,
-        description,
-        workspaceId: workspace.id
-      }
-    });
+    // Create challenge using standardized query
+    const challenge = await createChallenge(
+      { title, description },
+      workspace.id
+    );
 
     return NextResponse.json({ challenge }, { status: 201 });
   } catch (error) {
     console.error('Error creating challenge:', error);
+    
+    if (error instanceof DatabaseError) {
+      return NextResponse.json(
+        { error: error.message },
+        { status: 500 }
+      );
+    }
+    
     return NextResponse.json(
       { error: 'Failed to create challenge' },
       { status: 500 }

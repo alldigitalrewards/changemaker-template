@@ -23,7 +23,7 @@ model Workspace {
   users      User[]
   challenges Challenge[]
   createdAt  DateTime    @default(now())
-  updatedAt  DateTime    @updatedAt
+  updatedAt  DateTime    @updatedAt @default(now())
 }
 
 model User {
@@ -35,7 +35,7 @@ model User {
   workspace      Workspace?   @relation(fields: [workspaceId], references: [id], onDelete: SetNull)
   enrollments    Enrollment[]
   createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
+  updatedAt      DateTime     @updatedAt @default(now())
 
   @@index([workspaceId])
   @@index([workspaceId, role])
@@ -49,7 +49,7 @@ model Challenge {
   workspace   Workspace    @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   enrollments Enrollment[]
   createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
+  updatedAt   DateTime     @updatedAt @default(now())
 
   @@index([workspaceId])
   @@index([workspaceId, createdAt])
@@ -63,7 +63,7 @@ model Enrollment {
   user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   challenge   Challenge @relation(fields: [challengeId], references: [id], onDelete: Cascade)
   createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  updatedAt   DateTime  @updatedAt @default(now())
 
   @@unique([userId, challengeId])
   @@index([userId])

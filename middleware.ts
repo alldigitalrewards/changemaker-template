@@ -3,6 +3,33 @@ import { createServerClient } from '@supabase/ssr'
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
+  
+  // List of public routes that don't need auth processing
+  const publicRoutes = [
+    '/',
+    '/about',
+    '/how-it-works',
+    '/help',
+    '/contact',
+    '/faq',
+    '/challenges',
+    '/privacy',
+    '/terms',
+    '/auth/login',
+    '/auth/signup'
+  ]
+  
+  // Skip middleware for public routes and static assets
+  if (
+    publicRoutes.includes(pathname) ||
+    pathname.startsWith('/_next') ||
+    pathname.startsWith('/api/') ||
+    pathname.includes('.') // static files
+  ) {
+    return NextResponse.next()
+  }
+  
+  // Only process auth for protected routes
   let response = NextResponse.next()
   
   // Create Supabase client
@@ -27,15 +54,6 @@ export async function middleware(request: NextRequest) {
     // Handle auth errors
     if (error) {
       console.error('Auth error in middleware:', error)
-    }
-    
-    // Public routes that don't require auth
-    if (pathname === '/' || pathname.startsWith('/auth/') || pathname.startsWith('/how-it-works') || pathname.startsWith('/about')) {
-      // If authenticated and visiting auth pages, redirect to workspaces
-      if (session && (pathname === '/auth/login' || pathname === '/auth/signup')) {
-        return NextResponse.redirect(new URL('/workspaces', request.url))
-      }
-      return response
     }
 
     // Require authentication for protected routes

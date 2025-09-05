@@ -1,21 +1,9 @@
 import { cookies } from "next/headers"
-import { prisma } from "@/lib/prisma"
 import { createClient } from "@/lib/supabase/server"
+import { getWorkspaceBySlug, getUserBySupabaseId } from "@/lib/db/queries"
 
 export async function getCurrentWorkspace(slug: string) {
-  const workspace = await prisma.workspace.findUnique({
-    where: { slug },
-    include: {
-      _count: {
-        select: {
-          users: true,
-          challenges: true
-        }
-      }
-    }
-  })
-
-  return workspace
+  return await getWorkspaceBySlug(slug)
 }
 
 export async function getUserWorkspaceRole(slug: string) {
@@ -24,17 +12,11 @@ export async function getUserWorkspaceRole(slug: string) {
 
   if (!user) return null
 
-  const dbUser = await prisma.user.findUnique({
-    where: { supabaseUserId: user.id },
-    include: {
-      workspace: {
-        select: { slug: true }
-      }
-    }
-  })
+  // Get user with workspace info using standardized query
+  const dbUser = await getUserBySupabaseId(user.id)
 
   // Check if user belongs to this workspace
-  if (dbUser?.workspace?.slug !== slug) {
+  if (!dbUser?.workspace || dbUser.workspace.slug !== slug) {
     return null
   }
 

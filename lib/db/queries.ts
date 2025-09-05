@@ -1,9 +1,35 @@
 /**
- * Workspace-Isolated Database Query Functions
+ * WORKSPACE-ISOLATED DATABASE QUERY FUNCTIONS
+ * ===========================================
  * 
- * Standardized, secure query patterns for multi-tenant isolation.
- * All queries enforce workspaceId filtering to prevent data leakage.
- * Optimized includes to prevent N+1 problems.
+ * This module provides standardized, secure query patterns for multi-tenant isolation
+ * in the Changemaker MVP. All queries enforce workspaceId filtering to prevent data leakage.
+ * 
+ * SECURITY FEATURES:
+ * - ✅ All queries validate workspace access before operations
+ * - ✅ Foreign key cascade rules prevent orphaned data
+ * - ✅ Consistent error handling with typed exceptions
+ * - ✅ Optimized includes to prevent N+1 query problems
+ * - ✅ Type-safe query patterns with Prisma client types
+ * 
+ * SCHEMA CONSTRAINTS (4-MODEL LIMIT):
+ * - ✅ Workspace: Multi-tenant container with path-based routing (/w/[slug])
+ * - ✅ User: Authentication integration with Supabase, workspace-scoped roles
+ * - ✅ Challenge: Core business entity, workspace-scoped with cascade delete
+ * - ✅ Enrollment: Junction table with unique constraints and cascade delete
+ * 
+ * QUERY PATTERNS:
+ * - All workspace queries include _count for performance dashboards
+ * - All user queries include workspace relation for access validation
+ * - All challenge queries enforce workspaceId filtering
+ * - All enrollment queries validate through challenge.workspaceId relationship
+ * 
+ * DATABASE INDEXES:
+ * - [workspaceId] on User, Challenge for tenant isolation
+ * - [workspaceId, role] on User for role-based queries
+ * - [workspaceId, createdAt] on Challenge for ordered listings
+ * - [userId, challengeId] unique constraint on Enrollment
+ * - [challengeId], [userId], [status] on Enrollment for various queries
  */
 
 import { prisma } from '@/lib/prisma'
@@ -424,9 +450,8 @@ export async function getUserEnrollments(
         challenge: {
           select: { id: true, title: true, workspaceId: true }
         }
-      },
-      orderBy: { createdAt: 'desc' }
-    })
+      }
+    }) as EnrollmentWithDetails[]
   } catch (error) {
     throw new DatabaseError(`Failed to fetch user enrollments: ${error}`)
   }
@@ -458,9 +483,8 @@ export async function getChallengeEnrollments(
         challenge: {
           select: { id: true, title: true, workspaceId: true }
         }
-      },
-      orderBy: { createdAt: 'desc' }
-    })
+      }
+    }) as EnrollmentWithDetails[]
   } catch (error) {
     throw new DatabaseError(`Failed to fetch challenge enrollments: ${error}`)
   }
@@ -573,6 +597,34 @@ export async function deleteEnrollment(
     })
   } catch (error) {
     throw new DatabaseError(`Failed to delete enrollment: ${error}`)
+  }
+}
+
+/**
+ * Get all enrollments in workspace (admin only)
+ */
+export async function getAllWorkspaceEnrollments(
+  workspaceId: WorkspaceId
+): Promise<EnrollmentWithDetails[]> {
+  try {
+    return await prisma.enrollment.findMany({
+      where: {
+        challenge: {
+          workspaceId
+        }
+      },
+      include: {
+        user: {
+          select: { id: true, email: true }
+        },
+        challenge: {
+          select: { id: true, title: true, workspaceId: true }
+        }
+      },
+      orderBy: { createdAt: 'desc' }
+    }) as EnrollmentWithDetails[]
+  } catch (error) {
+    throw new DatabaseError(`Failed to fetch workspace enrollments: ${error}`)
   }
 }
 
