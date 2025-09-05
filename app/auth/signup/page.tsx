@@ -6,7 +6,6 @@ import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import Link from 'next/link'
 import { Role } from '@prisma/client'
 
@@ -81,15 +80,15 @@ export default function SignupPage() {
 
             <div>
               <Label htmlFor="role">Role</Label>
-              <Select value={role} onValueChange={(value: Role) => setRole(value)}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select your role" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="PARTICIPANT">Participant</SelectItem>
-                  <SelectItem value="ADMIN">Admin</SelectItem>
-                </SelectContent>
-              </Select>
+              <select
+                id="role"
+                value={role}
+                onChange={(e) => setRole(e.target.value as Role)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="PARTICIPANT">Participant</option>
+                <option value="ADMIN">Admin</option>
+              </select>
             </div>
           </div>
 
