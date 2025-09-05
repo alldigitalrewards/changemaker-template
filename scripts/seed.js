@@ -116,7 +116,7 @@ async function main() {
     },
   });
 
-  console.log('✅ Seed data created successfully');
+  console.log('Seed data created successfully');
   console.log('Workspace:', workspace.slug);
   console.log('Users:', { adminUser: adminUser.email, participantUser: participantUser.email });
   console.log('Challenges:', [challenge1.title, challenge2.title]);
