@@ -3,7 +3,8 @@
     "allow": [
       "mcp__context7__get-library-docs",
       "Bash(psql:*)",
-      "Bash(node:*)"
+      "Bash(node:*)",
+      "Bash(ls:*)"
     ],
     "additionalDirectories": [
       "/Users/jack/Projects/changemaker-project/changemaker-1"
