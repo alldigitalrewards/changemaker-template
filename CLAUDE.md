@@ -81,6 +81,32 @@ Follow this sequence – execute via agents or direct code changes. Commit/push 
 - "I'm not paid to write code, I'm paid to solve problems"
 - "Untested code is just a guess, not a solution"
 
+## Design Patterns for Consistency
+
+### UI Components (shadcn/ui)
+- **Buttons**: Primary actions use `className="bg-coral-500 hover:bg-coral-600"`, secondary actions use `variant="outline"`
+- **Cards**: Use `Card`, `CardHeader`, `CardTitle`, `CardDescription`, `CardContent` for all containers
+- **Modals**: Use `Dialog`, `DialogContent`, `DialogHeader`, `DialogTitle`, `DialogDescription`, `DialogFooter`
+- **Forms**: Use controlled inputs with `useState`, proper validation, and loading states
+
+### API Route Patterns
+- **Authentication**: Always use `requireWorkspaceAccess()` or `requireWorkspaceAdmin()` from `/lib/auth/api-auth.ts`
+- **Error Handling**: Use `withErrorHandling()` wrapper and typed exceptions from `/lib/db/queries.ts`
+- **Response Format**: Return `{ challenge }`, `{ challenges }`, `{ enrollment }`, etc. (not wrapped in `data`)
+- **Validation**: Use type guards from `/lib/types.ts` (e.g., `validateChallengeData()`)
+
+### Database Query Patterns
+- **Always workspace-isolated**: Include `workspaceId` filter in all queries
+- **Use standardized queries**: Import from `/lib/db/queries.ts` instead of inline Prisma calls
+- **Proper includes**: Use defined types like `ChallengeWithDetails`, `EnrollmentWithDetails`
+- **Error handling**: Catch and wrap in typed exceptions (`DatabaseError`, `WorkspaceAccessError`, `ResourceNotFoundError`)
+
+### Page Component Patterns
+- **Auth protection**: Always check auth and redirect appropriately
+- **Role validation**: Use `getUserWorkspaceRole()` from `/lib/workspace-context.ts`
+- **Workspace context**: Get workspace via `getCurrentWorkspace(slug)`
+- **Loading states**: Handle async operations with proper loading indicators
+
   **Remarks**
 - Minimalism is non-negotiable: The goal is a foundation that's "achievable in a day, maintainable by one person" (per TODAY.md). Overengineering killed the original repo—prevent it by defaulting to "no" on any non-core addition.
 - Testing extends to integration: When merging from the old repo, build and test the full flow (e.g., signup → workspace creation → challenge enrollment) before proceeding. If it fails the $100 bet, refactor until it passes.
