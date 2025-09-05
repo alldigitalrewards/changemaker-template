@@ -4,7 +4,6 @@ import { prisma } from "@/lib/prisma"
 import { getCurrentWorkspace, getUserWorkspaceRole } from "@/lib/workspace-context"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { LogoutButton } from "@/components/auth/logout-button"
 import Link from "next/link"
 
 export default async function ParticipantDashboard({ 
@@ -45,22 +44,9 @@ export default async function ParticipantDashboard({
   const enrollments = dbUser?.enrollments || []
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-coral-50 to-terracotta-50">
-      <div className="container mx-auto py-8 px-4">
-        <div className="mb-8 flex justify-between items-start">
-          <div>
-            <h1 className="text-3xl font-bold mb-2 text-navy-900">Participant Dashboard</h1>
-            <p className="text-navy-600">{workspace.name}</p>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-gray-500">{user.email}</span>
-            <LogoutButton />
-          </div>
-        </div>
-
-      <div className="grid gap-6">
-        {/* Stats Card */}
-        <Card>
+    <div className="space-y-6">
+      {/* Stats Card */}
+      <Card>
           <CardHeader>
             <CardTitle>Your Activity</CardTitle>
             <CardDescription>Overview of your participation</CardDescription>
@@ -146,9 +132,7 @@ export default async function ParticipantDashboard({
               </Link>
             </div>
           </CardContent>
-        </Card>
-        </div>
-      </div>
+      </Card>
     </div>
   )
 }
