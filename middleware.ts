@@ -1,26 +1,55 @@
-import { type NextRequest, NextResponse } from 'next/server';
+import { type NextRequest, NextResponse } from 'next/server'
+import { createServerClient } from '@supabase/ssr'
 
 function extractWorkspaceSlug(pathname: string): string | null {
-  // Extract workspace slug from /w/[slug] path pattern
-  const workspaceMatch = pathname.match(/^\/w\/([^\/]+)/);
-  return workspaceMatch ? workspaceMatch[1] : null;
+  const workspaceMatch = pathname.match(/^\/w\/([^\/]+)/)
+  return workspaceMatch ? workspaceMatch[1] : null
 }
 
 export async function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl;
-  const workspaceSlug = extractWorkspaceSlug(pathname);
+  const { pathname } = request.nextUrl
+  const response = NextResponse.next()
+  
+  // Create Supabase client
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return request.cookies.getAll()
+        },
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value, options }) => {
+            response.cookies.set(name, value, options)
+          })
+        },
+      },
+    }
+  )
 
-  // Handle workspace routes /w/[slug]/*
-  if (workspaceSlug) {
-    // TODO: Add workspace validation and user authentication
-    // TODO: Add role-based access control for admin routes
-    
-    // For now, allow all workspace routes to pass through
-    return NextResponse.next();
+  const { data: { session } } = await supabase.auth.getSession()
+  
+  // Public routes that don't require auth
+  if (pathname.startsWith('/auth/')) {
+    return response
   }
 
-  // Handle root domain routes
-  return NextResponse.next();
+  // Require auth for workspace routes
+  const workspaceSlug = extractWorkspaceSlug(pathname)
+  if (workspaceSlug) {
+    if (!session) {
+      return NextResponse.redirect(new URL('/auth/login', request.url))
+    }
+
+    // Check admin routes require admin role
+    if (pathname.includes('/admin/')) {
+      // Note: Role checking would require DB query - simplified for middleware
+      // Full role checking happens in route handlers
+    }
+  }
+
+  return response
 }
 
 export const config = {
