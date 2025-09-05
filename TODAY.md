@@ -81,3 +81,8 @@ model User {
 
   This is achievable in a day, maintainable by one person, and provides the core business value without the 2000+ files of bloat from the
   original.
+
+## Recent Updates and Immediate Actions (From Discussions)
+- **Agent Overhaul**: Consolidated agents to 5 essentials (refactor-guardian, db-minimalist, auth-simplifier, type-enforcer, task-coordinator) for minimalism. Considered full deletion; proposed new set of 4 if restarting. Action: Use refactor-guardian for page extraction/refactor.
+- **Public Pages Honeypot Integration**: Extract/refactor landing pages (home, about, how-it-works, etc.) from old repo as static UI/UX honeypots for lead gen. Preserve look/feel, strip bloat (dynamic logic, state), hardcode data, add comments for original dynamics. Action: Follow execution plan—analyze with refactor-guardian, implement with task-executor.
+- **Next Steps**: Prioritize auth (2 components), middleware (<50 lines), then integrate static public pages as facade. Test UI match and CTAs (e.g., to /login).

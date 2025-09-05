@@ -6,10 +6,17 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { rootDomain, protocol } from '@/lib/utils';
 
+import { FormState } from '@/lib/types'
+
+interface SubdomainFormState extends FormState {
+  subdomain?: string
+  icon?: string
+}
+
 export async function createSubdomainAction(
-  prevState: any,
+  prevState: SubdomainFormState,
   formData: FormData
-) {
+): Promise<SubdomainFormState> {
   const subdomain = formData.get('subdomain') as string;
   const icon = formData.get('icon') as string;
 
@@ -59,9 +66,9 @@ export async function createSubdomainAction(
 }
 
 export async function deleteSubdomainAction(
-  prevState: any,
+  prevState: FormState,
   formData: FormData
-) {
+): Promise<FormState> {
   const subdomain = formData.get('subdomain');
   await redis.del(`subdomain:${subdomain}`);
   revalidatePath('/admin');

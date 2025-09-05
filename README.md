@@ -21,12 +21,10 @@ A production-ready example of a multi-tenant application built with Next.js 15, 
    ```bash
    pnpm install
    ```
-3. Set up environment variables:
-   Create a `.env.local` file in the root directory with:
+3. run build and seeder
 
    ```
-   KV_REST_API_URL=your_redis_url
-   KV_REST_API_TOKEN=your_redis_token
+   pnpm build && pnpm run seed
    ```
 4. Start the development server:
 
@@ -37,16 +35,18 @@ A production-ready example of a multi-tenant application built with Next.js 15, 
 
    - Main site: http://localhost:3000
    - Admin panel: http://localhost:3000/admin
-   - Tenants: http://[tenant-name].localhost:3000
+   - Tenants WIP:
+     - localhost:3000/[workspace]/[org]/[role]/[resource]
 
-## Multi-Tenant Architecture
+## Multi-Tenant 
 
-This application demonstrates a subdomain-based multi-tenant architecture where:
+This application demonstrates a path-based multi-tenant architecture where:
 
-- Each tenant gets their own subdomain (`tenant.yourdomain.com`)
+- Each tenant gets their own workspace path:
+  - `(changemaker.im/{workspace.slug}/{org.slug}) `
 - The middleware handles routing requests to the correct tenant
-- Tenant data is stored in Redis using a `subdomain:{name}` key pattern
-- The main domain hosts the landing page and admin interface
+- Data isolation
+- The main domain hosts the landing pages and login interface
 - Subdomains are dynamically mapped to tenant-specific content
 
 The middleware (`middleware.ts`) intelligently detects subdomains across various environments (local development, production, and Vercel preview deployments).
@@ -168,3 +168,11 @@ cp -r ../changemaker-1/src/app/api/{auth,challenges,initiatives,enrollments,user
 - **Core Logic Check**: Ensure pages like challenge creation work – add seed data via Prisma if needed.
 
 This gives you a fresh start without bloat, leveraging the template's multi-tenancy while keeping your UI/theme. If you need me to run commands or read specific files for tweaks, let me know!
+
+## Project Evolution Log (Discussion Summaries)
+- **Refactor Goals**: Stripping bloat from original repo, adapting Vercel template to path-based multi-tenancy (/w/[slug]), focusing on minimal MVP (Supabase auth, workspaces, challenges/enrollment, 4-model schema). No extras like analytics or Redis.
+- **Agent Overhaul**: Consolidated from 13 bloated agents to 5 essentials, with anti-creep rules. Considered full deletion; proposed fresh set of 4 (refactor-guardian, db-minimalist, auth-simplifier, type-enforcer) to prevent overengineering. Agents now tools, not systems.
+- **Public Pages Strategy**: Integrate landing pages (home, about, etc.) as static honeypots for lead gen/waitlist. Preserve UI/UX look, strip dynamic bloat, hardcode data, add comments for originals. Execution via refactor-guardian (analysis/refactor) and task-executor (integration).
+- **Key Decisions**: Prioritize static public facade for POC/showcase; keep MVP minimal behind login. Use tools like edit_file for precise changes; enforce CLAUDE.md rules to avoid scope creep.
+
+This log tracks discussions for team alignment—update as needed.
