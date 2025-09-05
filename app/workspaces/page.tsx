@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server"
 import { prisma } from "@/lib/prisma"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { LogoutButton } from "@/components/auth/logout-button"
 import Link from "next/link"
 import CreateWorkspaceDialog from "./create-workspace-dialog"
 import JoinWorkspaceDialog from "./join-workspace-dialog"
@@ -38,9 +39,15 @@ export default async function WorkspacesPage() {
 
   return (
     <div className="container mx-auto py-8 px-4">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">Workspaces</h1>
-        <p className="text-gray-600">Manage your workspaces and join new ones</p>
+      <div className="mb-8 flex justify-between items-start">
+        <div>
+          <h1 className="text-3xl font-bold mb-2">Workspaces</h1>
+          <p className="text-gray-600">Manage your workspaces and join new ones</p>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="text-sm text-gray-500">{user.email}</span>
+          <LogoutButton />
+        </div>
       </div>
 
       <div className="grid gap-6">
