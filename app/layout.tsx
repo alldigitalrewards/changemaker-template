@@ -8,8 +8,59 @@ const geistSans = Geist({
 });
 
 export const metadata: Metadata = {
-  title: 'Changemaker Platform',
-  description: 'Empowering innovation through community challenges.',
+  title: {
+    default: 'Changemaker - Transform Ideas into Impact',
+    template: '%s | Changemaker'
+  },
+  description: 'Join the Changemaker Platform to participate in meaningful challenges that drive positive impact in your community. Earn rewards, build connections, and make a difference.',
+  keywords: ['changemaker', 'innovation', 'challenges', 'community impact', 'social good', 'collaboration'],
+  authors: [{ name: 'Changemaker Team' }],
+  creator: 'Changemaker',
+  publisher: 'Changemaker',
+  openGraph: {
+    type: 'website',
+    locale: 'en_US',
+    url: 'https://changemaker.im',
+    siteName: 'Changemaker',
+    title: 'Changemaker - Transform Ideas into Impact',
+    description: 'Join meaningful challenges that drive positive impact in your community.',
+    images: [
+      {
+        url: '/og-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'Changemaker Platform',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Changemaker - Transform Ideas into Impact',
+    description: 'Join meaningful challenges that drive positive impact in your community.',
+    images: ['/og-image.png'],
+    creator: '@changemaker',
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  icons: {
+    icon: '/icon',
+    apple: '/apple-icon',
+    shortcut: '/icon',
+  },
+  manifest: '/manifest.json',
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#ffffff' },
+    { media: '(prefers-color-scheme: dark)', color: '#0a0a0a' },
+  ],
 };
 
 export default function RootLayout({
