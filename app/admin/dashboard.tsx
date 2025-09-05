@@ -14,10 +14,9 @@ type Tenant = {
   createdAt: number;
 };
 
-type DeleteState = {
-  error?: string;
-  success?: string;
-};
+import { FormState } from '@/lib/types';
+
+type DeleteState = FormState;
 
 function DashboardHeader() {
   // TODO: You can add authentication here with your preferred auth provider
