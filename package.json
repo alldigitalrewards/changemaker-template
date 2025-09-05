@@ -1,4 +1,7 @@
 {
+  "name": "changemaker",
+  "version": "0.1.0",
+  "description": "Changemaker application built with Next.js, Prisma, and Supabase.",
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",

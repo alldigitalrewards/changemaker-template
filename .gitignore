@@ -59,6 +59,15 @@ node_modules/
 *.sw?
 # OS specific
 
+.cursor
+.taskmaster
+.claude
+.notes.txt
+.mcp.json
+.mcp
+.mcp.json
+.mcp.json
+
 # Task files
 # tasks.json
 # tasks/ 
