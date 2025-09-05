@@ -6,10 +6,18 @@
       "Bash(node:*)",
       "Bash(ls:*)",
       "Bash(pnpm build:*)",
-      "Bash(pnpm prisma:*)"
+      "Bash(pnpm prisma:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
     ],
     "additionalDirectories": [
       "/Users/jack/Projects/changemaker-project/changemaker-1"
     ]
-  }
+  },
+  "enabledMcpjsonServers": [
+    "zen",
+    "supabase-production",
+    "supabase-staging",
+    "task-master-ai"
+  ]
 }

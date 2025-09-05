@@ -1,6 +1,7 @@
 // How It Works page - static, no client components
 import React from 'react';
 import Link from 'next/link';
+import PublicNavbar from '@/components/navigation/public-navbar';
 import {
   Target,
   Zap,
@@ -35,6 +36,7 @@ import { Button } from '@/components/ui/button';
 export default function HowItWorksPage() {
   return (
     <div className="min-h-screen bg-white">
+      <PublicNavbar />
       {/* Hero Section */}
       <section className="relative py-20 lg:py-32 bg-gray-900 text-white overflow-hidden">
         <div className="absolute inset-0">

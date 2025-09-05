@@ -10,6 +10,7 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import PublicNavbar from '@/components/navigation/public-navbar';
 
 // Loading component for Suspense
 function HomeLoading() {
@@ -34,6 +35,7 @@ function HomeLoading() {
 function PublicLandingPage() {
   return (
     <div className="min-h-screen bg-white">
+      <PublicNavbar />
       {/* Hero Section */}
       <section className="container mx-auto px-4 py-16 text-center">
         <div className="max-w-4xl mx-auto space-y-8">
