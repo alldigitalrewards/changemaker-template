@@ -24,7 +24,7 @@ export default function SignupPage() {
     setError(null)
 
     try {
-      const { error } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
@@ -34,8 +34,19 @@ export default function SignupPage() {
 
       if (error) throw error
 
-      // Redirect to login with success message
-      router.push('/auth/login?message=Please check your email to confirm your account')
+      // If the user is created immediately (local development), sync to Prisma
+      if (data.user && !data.user.email_confirmed_at) {
+        // User needs to confirm email - redirect to login
+        router.push('/auth/login?message=Please check your email to confirm your account')
+      } else if (data.user) {
+        // User is immediately available (local setup) - sync and redirect
+        await fetch('/api/auth/sync-user', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ user: data.user })
+        })
+        router.push('/auth/login?message=Account created successfully! Please sign in.')
+      }
     } catch (error: any) {
       setError(error.message || 'Failed to create account')
     } finally {
