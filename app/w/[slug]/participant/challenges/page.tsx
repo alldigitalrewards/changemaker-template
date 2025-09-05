@@ -82,7 +82,7 @@ export default async function ParticipantChallengesPage({
               defaultValue={search}
               className="flex-1"
             />
-            <Button type="submit">Search</Button>
+            <Button type="submit" className="bg-coral-500 hover:bg-coral-600">Search</Button>
             {search && (
               <Button variant="outline" asChild>
                 <a href={`/w/${slug}/participant/challenges`}>Clear</a>

@@ -162,3 +162,86 @@ export async function POST(
     );
   }
 }
+
+export async function PUT(
+  request: NextRequest,
+  context: { params: Promise<{ slug: string }> }
+): Promise<NextResponse<ChallengeCreateResponse | ApiError>> {
+  try {
+    const { slug } = await context.params;
+    const body = await request.json();
+
+    // Verify authentication
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    
+    if (!user) {
+      return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
+    }
+
+    // Validate input with type safety
+    if (!validateChallengeData(body)) {
+      return NextResponse.json(
+        { error: 'Title and description are required and must be non-empty strings' },
+        { status: 400 }
+      );
+    }
+
+    const { title, description } = body;
+
+    // Find workspace with validation
+    const workspace = await getWorkspaceBySlug(slug);
+    if (!workspace) {
+      return NextResponse.json(
+        { error: 'Workspace not found' },
+        { status: 404 }
+      );
+    }
+
+    // Verify user is admin of this workspace
+    const dbUser = await getUserBySupabaseId(user.id);
+    if (!dbUser || dbUser.workspaceId !== workspace.id) {
+      return NextResponse.json(
+        { error: 'Access denied to workspace' },
+        { status: 403 }
+      );
+    }
+
+    const isAdmin = await verifyWorkspaceAdmin(dbUser.id, workspace.id);
+    if (!isAdmin) {
+      return NextResponse.json(
+        { error: 'Admin privileges required to update challenges' },
+        { status: 403 }
+      );
+    }
+
+    // Update challenge using standardized query
+    const challenge = await createChallenge(
+      { title, description },
+      workspace.id
+    );
+
+    return NextResponse.json({ challenge }, { status: 200 });
+  } catch (error) {
+    console.error('Error updating challenge:', error);
+    
+    if (error instanceof DatabaseError) {
+      return NextResponse.json(
+        { error: error.message },
+        { status: 500 }
+      );
+    }
+    
+    if (error instanceof WorkspaceAccessError) {
+      return NextResponse.json(
+        { error: 'Access denied' },
+        { status: 403 }
+      );
+    }
+    
+    return NextResponse.json(
+      { error: 'Failed to update challenge' },
+      { status: 500 }
+    );
+  }
+}
