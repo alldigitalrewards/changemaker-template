@@ -48,8 +48,8 @@ export default function EnrollButton({
 
   if (enrolled) {
     return (
-      <Button variant="outline" disabled className="w-full">
-        Enrolled
+      <Button variant="outline" disabled className="w-full border-coral-300 text-coral-700">
+        ✓ Enrolled
       </Button>
     )
   }
@@ -58,9 +58,9 @@ export default function EnrollButton({
     <Button 
       onClick={handleEnroll} 
       disabled={loading}
-      className="w-full"
+      className="w-full bg-gradient-to-r from-coral-500 to-terracotta-600 hover:from-coral-600 hover:to-terracotta-700 text-white"
     >
-      {loading ? "Enrolling..." : "Enroll"}
+      {loading ? "Enrolling..." : "Join Challenge"}
     </Button>
   )
 }

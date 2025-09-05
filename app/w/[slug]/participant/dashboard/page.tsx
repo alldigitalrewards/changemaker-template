@@ -45,17 +45,18 @@ export default async function ParticipantDashboard({
   const enrollments = dbUser?.enrollments || []
 
   return (
-    <div className="container mx-auto py-8 px-4">
-      <div className="mb-8 flex justify-between items-start">
-        <div>
-          <h1 className="text-3xl font-bold mb-2">Participant Dashboard</h1>
-          <p className="text-gray-600">{workspace.name}</p>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-coral-50 to-terracotta-50">
+      <div className="container mx-auto py-8 px-4">
+        <div className="mb-8 flex justify-between items-start">
+          <div>
+            <h1 className="text-3xl font-bold mb-2 text-navy-900">Participant Dashboard</h1>
+            <p className="text-navy-600">{workspace.name}</p>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-gray-500">{user.email}</span>
+            <LogoutButton />
+          </div>
         </div>
-        <div className="flex items-center gap-2">
-          <span className="text-sm text-gray-500">{user.email}</span>
-          <LogoutButton />
-        </div>
-      </div>
 
       <div className="grid gap-6">
         {/* Stats Card */}
@@ -146,6 +147,7 @@ export default async function ParticipantDashboard({
             </div>
           </CardContent>
         </Card>
+        </div>
       </div>
     </div>
   )
