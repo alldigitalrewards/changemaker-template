@@ -308,6 +308,14 @@ export async function getWorkspaceChallenges(workspaceId: WorkspaceId): Promise<
   try {
     return await prisma.challenge.findMany({
       where: { workspaceId },
+      include: {
+        enrollments: true,
+        _count: {
+          select: {
+            enrollments: true
+          }
+        }
+      },
       orderBy: { title: 'asc' }
     })
   } catch (error) {
